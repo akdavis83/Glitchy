@@ -1,0 +1,84 @@
+
+<base href="https://docs.lume.io/guide/custom-rendering/example.html" />
+<script src="../../importmap.js"></script>
+<link rel="icon" href="https://fav.farm/✅" />
+<a href="https://akdavis83.github.io/Lume-1/" class="full-page-link">
+<lume-scene webgl id="scene">
+	<lume-camera-rig horizontal-angle="-30" vertical-angle="30"></lume-camera-rig>
+	<lume-box size="100 100 100" mount-point="0.5 0.5 0.5"></lume-box>
+	<lume-point-light position="200 400 500" color="deeppink" intensity="0.6"></lume-point-light>
+	<lume-point-light position="-200 -400 -500" color="royalblue" intensity="0.6"></lume-point-light>
+</lume-scene>
+<div style="text-align: center;">
+    <h1 style="color: rgb(4, 4, 92);">1 He that dwelleth in the secret place of the most High shall abide under the shadow of the Almighty. 2 I will say of the LORD, He is my refuge and my fortress: my God; in him will I trust. 3 Surely he shall deliver thee from the snare of the fowler, and from the noisome pestilence. 4 He shall cover thee with his feathers, and under his wings shalt thou trust: his truth shall be thy shield and buckler. 5 Thou shalt not be afraid for the terror by night; nor for the arrow that flieth by day; 6 Nor for the pestilence that walketh in darkness; nor for the destruction that wasteth at noonday. 7 A thousand shall fall at thy side, and ten thousand at thy right hand; but it shall not come nigh thee. 8 Only with thine eyes shalt thou behold and see the reward of the wicked. 9 Because thou hast made the LORD, which is my refuge, even the most High, thy habitation; 10 There shall no evil befall thee, neither shall any plague come nigh thy dwelling. 11 For he shall give his angels charge over thee, to keep thee in all thy ways. 12 They shall bear thee up in their hands, lest thou dash thy foot against a stone. 13 Thou shalt tread upon the lion and adder: the young lion and the dragon shalt thou trample under feet. 14 Because he hath set his love upon me, therefore will I deliver him: I will set him on high, because he hath known my name. 15 He shall call upon me, and I will answer him: I will be with him in trouble; I will deliver him, and honour him. 16 With long life will I satisfy him, and shew him my salvation. (Psalm 91)</h1>
+</div>
+<style>
+	html,
+	body {
+		margin: 0;
+		height: 100%;
+	}
+	lume-element3d {
+		padding: 5px;
+	}
+    .full-page-link {
+        display: block;
+        width: 100%;
+        height: 100vh;
+        text-decoration: none;
+        cursor: pointer;
+         /* Optional background color */
+      }
+</style>
+
+<script type="module">
+	import {Motor} from 'lume'
+	import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer.js'
+	import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass.js'
+	import {GlitchPass} from 'three/examples/jsm/postprocessing/GlitchPass.js'
+	import {OutputPass} from 'three/examples/jsm/postprocessing/OutputPass.js'
+
+	const composer = new EffectComposer(scene.glRenderer)
+
+	function setDimensions() {
+		composer.setPixelRatio(window.devicePixelRatio)
+		const resize = () => composer.setSize(scene.clientWidth, scene.clientHeight)
+		const observer = new ResizeObserver(resize)
+		observer.observe(scene)
+	}
+
+	// If you do things manually with Three.js, you need to make sure to set the
+	// proper rendering dimensions. Comment this out and it will still work, but
+	// the demo may be lower resolution and look pixelated.
+	setDimensions()
+
+	const renderPass = new RenderPass(scene.three, scene.threeCamera)
+	composer.addPass(renderPass)
+
+	const glitchPass = new GlitchPass()
+	composer.addPass(glitchPass)
+
+	const outputPass = new OutputPass()
+	composer.addPass(outputPass)
+
+	scene.drawScene = () => {
+		// If there are multiple cameras in the Lume scene, make sure to always
+		// use the currently-active camera.
+		renderPass.camera = scene.threeCamera
+
+		composer.render()
+	}
+
+	// If you need the scene to be continuously rendering for a certain
+	// post-processing effects (for example, the GlitchPass is animated over
+	// time), then make a loop that calls scene.needsUpdate() repeatedly. Here
+	// we do that with Lume's Motor:
+	Motor.addRenderTask(() => scene.needsUpdate())
+
+	// Alternatively, make an rAF loop:
+	// requestAnimationFrame(function loop() {
+	// 	scene.needsUpdate()
+	// 	requestAnimationFrame(loop)
+	// })
+</script>
+</a>
